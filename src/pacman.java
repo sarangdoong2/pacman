@@ -23,6 +23,7 @@ public class pacman {
 	final CardLayout card = new CardLayout();
 	final JDialog dialog = new JDialog();
 	final JLabel[][] f = new JLabel[14][14];
+	int[][] fnum = new int[14][14];
 	final JLabel jl = new JLabel();	//밑에 패널
 	private static Random random;
 	private static int pacmanH, pacmanW, enemyH, enemyW, numOfDot, where, start, cnt;
@@ -41,7 +42,7 @@ public class pacman {
 		jl.setBackground(col);
 		jl.setFont(new Font("Munro Small", Font.PLAIN, 28));
 
-		cnt = 0; pacmanH=12;  pacmanW=7;  enemyH=7;  enemyW=7;  numOfDot=76;  start=2;  temp=empty;	//numOfDot : 남아있는 코인 개수
+		cnt = 0; pacmanH=12;  pacmanW=7;  enemyH=5;  enemyW=7;  numOfDot=76;  start=2;  temp=empty;	//numOfDot : 남아있는 코인 개수
 		
 		for (int i=0; i<14; i++) {
 			for(int j=0; j<14; j++) {
@@ -104,7 +105,6 @@ public class pacman {
 						dialog.add(button2);
 						dialog.setVisible(true);
 						frame.dispose();
-						GameOverSound();
 					}
 
 				if(enemyH==5 && enemyW==7) { f[6][7].setIcon(wall); }
@@ -145,9 +145,9 @@ public class pacman {
 						}
 						if((f[pacmanH-1][pacmanW].getIcon()).equals(enemy)) {	//방향키 위버튼 누르다가 적 만났을 때 게임 종료
 							f[enemyH][enemyW].setIcon(enemy);
-							
 							dialog.add(button2);
 							dialog.setVisible(true);
+							frame.dispose();
 							GameOverSound();
 						}
 						break;
@@ -173,6 +173,7 @@ public class pacman {
 							f[enemyH][enemyW].setIcon(enemy);
 							dialog.add(button2);
 							dialog.setVisible(true);
+							frame.dispose();
 							GameOverSound();
 						}
 						
@@ -200,6 +201,7 @@ public class pacman {
 							f[enemyH][enemyW].setIcon(enemy);
 							dialog.add(button2);
 							dialog.setVisible(true);
+							frame.dispose();
 							GameOverSound();
 						}
 						
@@ -226,6 +228,7 @@ public class pacman {
 							f[enemyH][enemyW].setIcon(enemy);
 							dialog.add(button2);
 							dialog.setVisible(true);
+							frame.dispose();
 							GameOverSound();
 						}
 						break;
@@ -254,34 +257,46 @@ public class pacman {
 		frame.requestFocus();
 		frame.addKeyListener(new KListener());
 		
-		for(int i=0; i<14; i++) {	//배열크기만큼 wall 생성
+		fnum= new int[][] 
+			  {{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			   {0,1,0,2,2,2,2,2,2,2,1,2,2,0},
+			   {0,2,0,2,0,0,0,2,0,2,0,0,2,0},
+			   {0,2,0,2,2,2,0,2,0,0,2,2,2,0},
+			   {0,2,0,2,0,2,2,2,2,2,2,2,2,0},
+			   {0,2,2,2,0,0,0,4,0,0,0,2,2,0},
+			   {0,0,2,0,0,3,3,0,3,3,0,1,0,0},
+			   {0,2,2,2,0,3,3,3,3,3,0,2,2,0},
+			   {0,2,0,0,0,0,0,0,0,0,0,0,2,0},
+			   {0,2,2,2,2,2,2,0,2,2,0,2,2,0},
+			   {0,0,0,0,0,2,2,2,2,2,0,0,2,0},
+			   {0,1,0,2,0,2,0,2,0,2,0,2,2,0},
+			   {0,2,2,1,2,2,0,5,0,2,2,2,0,0},
+			   {0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+			   
+		for(int i=0; i<14; i++) {	//배열크기만큼 wall 등등(big=1 small=2 wall=else empty= 3 enemy = 4 pacman=5)... 생성
 			for(int j=0; j<14; j++) {
-
-				f[i][j].setIcon(wall);
+				if(fnum[i][j] == 1) {
+					f[i][j].setIcon(bigDot);
+				}
+				else if(fnum[i][j] == 2) {
+					f[i][j].setIcon(smallDot);
+				}
+				else if(fnum[i][j] == 3) {
+					f[i][j].setIcon(empty);
+				}
+				else if(fnum[i][j] == 4) {
+					f[i][j].setIcon(enemy);
+				}
+				else if(fnum[i][j] == 5) {
+					f[i][j].setIcon(pacman);
+				}
+				else {
+					f[i][j].setIcon(wall);
+				}
 				f[i][j].addKeyListener(listener);
 				panel.add(f[i][j]);
 			}
 		}
-		
-		f[1][1].setIcon(bigDot);	f[2][1].setIcon(smallDot);	f[3][1].setIcon(smallDot);	f[4][1].setIcon(smallDot);	f[5][1].setIcon(smallDot);
-		f[5][2].setIcon(smallDot);	f[5][3].setIcon(smallDot);	f[1][3].setIcon(smallDot);	f[2][3].setIcon(smallDot);	f[3][3].setIcon(smallDot);
-		f[4][3].setIcon(smallDot);	f[1][4].setIcon(smallDot);	f[1][5].setIcon(smallDot);	f[1][6].setIcon(smallDot);	f[1][7].setIcon(smallDot);
-		f[1][8].setIcon(smallDot);	f[1][9].setIcon(smallDot);	f[1][10].setIcon(smallDot);	f[1][11].setIcon(smallDot);	f[1][12].setIcon(smallDot);
-		f[2][9].setIcon(smallDot);	f[2][12].setIcon(smallDot);	f[3][12].setIcon(smallDot);	f[4][12].setIcon(smallDot);	f[5][12].setIcon(smallDot);
-		f[3][4].setIcon(smallDot);	f[3][5].setIcon(smallDot);	f[3][10].setIcon(smallDot);	f[3][11].setIcon(smallDot);
-		f[4][5].setIcon(smallDot);	f[4][6].setIcon(smallDot);	f[4][7].setIcon(smallDot);	f[4][8].setIcon(smallDot);	f[4][9].setIcon(smallDot);
-		f[4][10].setIcon(smallDot);	f[2][7].setIcon(smallDot);	f[3][7].setIcon(smallDot);	f[4][10].setIcon(smallDot);	f[4][11].setIcon(smallDot);
-		f[5][11].setIcon(smallDot);	f[6][11].setIcon(bigDot);	f[7][11].setIcon(smallDot);	f[7][12].setIcon(smallDot);	f[8][12].setIcon(smallDot);
-		f[9][12].setIcon(smallDot);	f[10][12].setIcon(smallDot);f[11][12].setIcon(smallDot);	f[5][7].setIcon(empty);	f[6][2].setIcon(smallDot);
-		f[7][1].setIcon(smallDot);	f[9][11].setIcon(smallDot);	f[11][1].setIcon(bigDot);	f[11][3].setIcon(smallDot);	f[11][11].setIcon(smallDot);
-		f[7][2].setIcon(smallDot);	f[7][3].setIcon(smallDot);	f[8][1].setIcon(smallDot);	f[9][1].setIcon(smallDot);	f[9][2].setIcon(smallDot);
-		f[9][3].setIcon(smallDot);	f[9][4].setIcon(smallDot);	f[9][5].setIcon(smallDot);	f[9][6].setIcon(smallDot);	f[12][1].setIcon(smallDot);
-		f[12][2].setIcon(smallDot);	f[12][3].setIcon(smallDot);	f[12][4].setIcon(smallDot);	f[12][5].setIcon(smallDot);	f[12][9].setIcon(smallDot);
-		f[12][10].setIcon(smallDot);f[12][11].setIcon(smallDot); f[10][5].setIcon(smallDot); f[11][5].setIcon(smallDot); f[10][6].setIcon(smallDot);
-		f[10][7].setIcon(smallDot);	f[10][8].setIcon(smallDot); f[10][9].setIcon(smallDot); f[11][7].setIcon(smallDot); f[12][7].setIcon(pacman);
-		f[9][8].setIcon(smallDot); f[9][9].setIcon(smallDot); f[11][9].setIcon(smallDot); f[6][5].setIcon(empty);f[6][6].setIcon(empty);
-		f[6][7].setIcon(empty); f[6][8].setIcon(empty);f[6][9].setIcon(empty); f[7][5].setIcon(empty);f[7][6].setIcon(empty);
-		f[7][7].setIcon(enemy); f[7][8].setIcon(empty);f[7][9].setIcon(empty);	//코인 위치
 		
 		panel2.add(jl);
 		//프레임안에서 패널을 2개를 적절하게 배치하기 위해 사용.
